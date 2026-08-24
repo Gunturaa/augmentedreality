@@ -30,32 +30,39 @@ export default function ARScene({ modelUrl, hotspotsCode }: { modelUrl: string; 
                 const text = annotationDiv ? annotationDiv.textContent : 'Info Part';
                 
                 if (pos) {
-                  // Membersihkan huruf 'm' (meter) dari koordinat Google
-                  const cleanPos = pos.replace(/m/g, '').trim();
-                  
-                  // Menciptakan "Bola Bercahaya" 3D di koordinat tersebut
-                  const sphere = document.createElement('a-sphere');
-                  sphere.setAttribute('position', cleanPos);
-                  // MEMPERBESAR HITBOX: Ukuran bola dibesarkan (dari 0.08 ke 0.15) agar sangat mudah dipencet dengan jari
-                  sphere.setAttribute('radius', '0.15'); 
-                  sphere.setAttribute('color', '#4f46e5'); // Warna ungu indigo
-                  sphere.setAttribute('opacity', '0.9');
-                  sphere.setAttribute('class', 'clickable'); // Agar bisa di-klik oleh raycaster
-                  sphere.setAttribute('animation__pulse', 'property: scale; from: 1 1 1; to: 1.5 1.5 1.5; dir: alternate; loop: true; dur: 800');
-                  
-                  // Logika saat bola disentuh/diklik
+                  // Membuat wadah untuk Visual dan Hitbox
+                  const container = document.createElement('a-entity');
+                  container.setAttribute('position', cleanPos);
+
+                  // 1. BOLA VISUAL (Kecil, elegan, dan berdenyut)
+                  const visual = document.createElement('a-sphere');
+                  visual.setAttribute('radius', '0.04'); 
+                  visual.setAttribute('color', '#4f46e5'); 
+                  visual.setAttribute('opacity', '0.9');
+                  visual.setAttribute('animation__pulse', 'property: scale; from: 1 1 1; to: 1.5 1.5 1.5; dir: alternate; loop: true; dur: 800');
+
+                  // 2. BOLA HITBOX (Besar, transparan, sebagai sensor sentuhan jari)
+                  const hitbox = document.createElement('a-sphere');
+                  hitbox.setAttribute('radius', '0.25'); // Ukuran super besar untuk jari
+                  hitbox.setAttribute('opacity', '0'); // Dibuat 100% transparan
+                  hitbox.setAttribute('material', 'transparent: true');
+                  hitbox.setAttribute('class', 'clickable'); // Sensor klik hanya pada hitbox
+
+                  // Logika saat hitbox disentuh/diklik
                   const triggerInfo = () => {
                     window.dispatchEvent(new CustomEvent('show-ar-info', { detail: text }));
-                    sphere.setAttribute('color', '#fbbf24');
-                    setTimeout(() => sphere.setAttribute('color', '#4f46e5'), 500);
+                    visual.setAttribute('color', '#fbbf24'); // Visual yang berkedip
+                    setTimeout(() => visual.setAttribute('color', '#4f46e5'), 500);
                   };
                   
                   // Gunakan click dan mousedown untuk kompatibilitas layar sentuh HP
-                  sphere.addEventListener('click', triggerInfo);
-                  sphere.addEventListener('mousedown', triggerInfo);
+                  hitbox.addEventListener('click', triggerInfo);
+                  hitbox.addEventListener('mousedown', triggerInfo);
                   
-                  // Tempelkan bola ke dalam objek 3D utama
-                  this.el.appendChild(sphere);
+                  // Tempelkan visual dan hitbox ke dalam container, lalu ke objek 3D utama
+                  container.appendChild(visual);
+                  container.appendChild(hitbox);
+                  this.el.appendChild(container);
                 }
               });
             }

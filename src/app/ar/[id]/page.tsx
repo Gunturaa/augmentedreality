@@ -29,32 +29,28 @@ export default async function DynamicARPage({ params }: { params: Promise<{ id: 
   }
 
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden bg-transparent">
-      {/* Load A-Frame and AR.js before the page becomes interactive */}
-      <Script src="https://aframe.io/releases/1.3.0/aframe.min.js" strategy="beforeInteractive" />
-      <Script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js" strategy="beforeInteractive" />
+    <div className="relative w-full h-[100dvh] overflow-hidden bg-zinc-950">
+      {/* Load Google Model-Viewer */}
+      <Script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js" strategy="lazyOnload" />
       
-      {/* Navigation Layer (Must have high z-index to stay on top of the camera view) */}
+      {/* Navigation Layer */}
       <div className="absolute top-6 left-6 z-50">
         <Link 
           href="/" 
-          className="px-5 py-2.5 bg-white/90 backdrop-blur text-black font-semibold rounded-xl shadow-lg border border-white/20 hover:bg-white transition-all"
+          className="px-5 py-2.5 bg-white/10 backdrop-blur border border-white/20 text-white text-sm font-semibold rounded-2xl shadow-lg hover:bg-white hover:text-black transition-all"
         >
-          ← Exit AR
+          ← Kembali
         </Link>
       </div>
 
-      {/* AR Viewfinder UI */}
-      <div className="absolute bottom-10 left-0 right-0 z-50 flex flex-col items-center pointer-events-none gap-2">
-        <div className="bg-black/70 backdrop-blur px-6 py-3 rounded-full border border-white/20 text-white font-bold shadow-lg">
+      {/* Model Title */}
+      <div className="absolute top-6 right-6 z-50 pointer-events-none">
+        <div className="bg-black/60 backdrop-blur px-5 py-2.5 rounded-2xl border border-white/10 text-white font-bold shadow-lg">
           {model.name}
-        </div>
-        <div className="bg-black/50 backdrop-blur px-4 py-2 rounded-full border border-white/10 text-white/90 text-xs tracking-wide">
-          Point camera at Hiro Marker
         </div>
       </div>
 
-      {/* AR Scene Canvas */}
+      {/* Model Viewer Scene */}
       <ARScene modelUrl={model.url} />
     </div>
   );

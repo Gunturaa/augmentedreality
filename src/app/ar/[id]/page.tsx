@@ -29,9 +29,10 @@ export default async function DynamicARPage({ params }: { params: Promise<{ id: 
   }
 
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden bg-zinc-950">
-      {/* Load Google Model-Viewer */}
-      <Script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js" strategy="afterInteractive" />
+    <div className="relative w-full h-[100dvh] overflow-hidden bg-transparent">
+      {/* Load A-Frame and AR.js */}
+      <Script src="https://aframe.io/releases/1.3.0/aframe.min.js" strategy="beforeInteractive" />
+      <Script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js" strategy="beforeInteractive" />
       
       {/* Navigation Layer */}
       <div className="absolute top-6 left-6 z-50">

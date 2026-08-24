@@ -1,11 +1,9 @@
 import Script from "next/script";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
-// Dynamically import the AR component with no SSR since it requires the window object
-const ARScene = dynamic(() => import("../../../components/ARScene"), { ssr: false });
+import ARScene from "../../../components/ARScene";
 
 async function getModel(id: string) {
   try {

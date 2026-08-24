@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { supabase } from "@/lib/supabase";
 
 export default function AdminDashboard() {
   const [models, setModels] = useState<any[]>([]);
@@ -30,14 +31,44 @@ export default function AdminDashboard() {
   const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setUploading(true);
-    setUploadStatus("Uploading...");
+    setUploadStatus("Starting upload...");
     
     const formData = new FormData(e.currentTarget);
+    const name = formData.get("name") as string;
+    const file = formData.get("file") as File;
+
+    if (!name || !file) {
+      setUploadStatus("Name and file are required.");
+      setUploading(false);
+      return;
+    }
     
     try {
+      // 1. Generate unique ID for the file
+      const id = crypto.randomUUID();
+      const ext = file.name.substring(file.name.lastIndexOf('.'));
+      const filename = `${id}${ext}`;
+
+      // 2. Upload directly to Supabase Storage from browser
+      setUploadStatus(`Uploading 3D file to Cloud...`);
+      const { data: storageData, error: storageError } = await supabase.storage
+        .from('ar-models')
+        .upload(filename, file, {
+          upsert: false,
+        });
+
+      if (storageError) {
+        throw new Error("Failed to upload to storage: " + storageError.message);
+      }
+
+      // 3. Send metadata to Next.js API to generate QR Code and save to Database
+      setUploadStatus("Generating QR Code & saving data...");
       const res = await fetch("/api/upload", {
         method: "POST",
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id, name, filename }),
       });
       
       if (res.ok) {
@@ -45,10 +76,12 @@ export default function AdminDashboard() {
         e.currentTarget.reset();
         fetchModels(); // Refresh the list
       } else {
-        setUploadStatus("Upload failed.");
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to process metadata.");
       }
-    } catch (error) {
-      setUploadStatus("An error occurred.");
+    } catch (error: any) {
+      console.error("Upload error:", error);
+      setUploadStatus(error.message || "An error occurred.");
     } finally {
       setUploading(false);
     }

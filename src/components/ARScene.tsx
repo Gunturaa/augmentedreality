@@ -13,33 +13,28 @@ export default function ARScene({ modelUrl, hotspotsCode }: { modelUrl: string; 
     setMounted(true);
   }, []);
 
-  // Effect to handle hotspots code injection and interaction
   useEffect(() => {
-    if (!mounted || !viewerRef.current || !hotspotsCode) return;
+    console.log("Hotspots Code received:", hotspotsCode);
+    console.log("Viewer Ref:", viewerRef.current);
     
-    // Inject the raw HTML hotspots code into the model-viewer
-    // using insertAdjacentHTML to ensure they act as direct children
-    viewerRef.current.insertAdjacentHTML('beforeend', hotspotsCode);
+    if (!mounted || !viewerRef.current || !hotspotsCode) {
+      console.log("Skipping injection setup. Mounted:", mounted, "Ref:", !!viewerRef.current, "Code:", !!hotspotsCode);
+      return;
+    }
 
-    // After injecting, we find all the new Hotspot buttons and add click interactions
     const hotspots = viewerRef.current.querySelectorAll('.Hotspot');
+    console.log("Hotspots found after injection:", hotspots.length);
     
     hotspots.forEach((hotspot: HTMLElement) => {
-      // Find the annotation div inside this hotspot
       const annotation = hotspot.querySelector('.HotspotAnnotation') as HTMLElement;
       if (annotation) {
-        // Hide by default
         annotation.style.display = 'none';
         
-        // Add click listener
         hotspot.addEventListener('click', () => {
-          // Toggle visibility
           if (annotation.style.display === 'none') {
-            // Hide all others first (optional, to only show one at a time)
             viewerRef.current.querySelectorAll('.HotspotAnnotation').forEach((ann: HTMLElement) => {
               ann.style.display = 'none';
             });
-            // Show this one
             annotation.style.display = 'block';
           } else {
             annotation.style.display = 'none';
@@ -47,7 +42,6 @@ export default function ARScene({ modelUrl, hotspotsCode }: { modelUrl: string; 
         });
       }
     });
-
   }, [mounted, hotspotsCode]);
 
   if (!mounted) {
@@ -61,10 +55,20 @@ export default function ARScene({ modelUrl, hotspotsCode }: { modelUrl: string; 
     );
   }
 
+  // Combine AR button and dynamic hotspots into one HTML string for dangerouslySetInnerHTML
+  const innerHtmlContent = `
+    <button 
+      slot="ar-button" 
+      class="absolute bottom-10 left-1/2 transform -translate-x-1/2 bg-white text-black font-extrabold px-8 py-4 rounded-full shadow-[0_10px_40px_rgba(255,255,255,0.3)] hover:scale-105 active:scale-95 transition-all flex items-center gap-3 z-50"
+    >
+      <span class="text-2xl">📷</span> 
+      VIEW IN REAL WORLD
+    </button>
+    ${hotspotsCode || ""}
+  `;
+
   return (
     <div className="w-full h-full bg-zinc-900">
-      
-      {/* CSS Dinamis untuk mempercantik Hotspot mentah dari model-viewer editor */}
       <style dangerouslySetInnerHTML={{__html: `
         .Hotspot {
           background: rgba(79, 70, 229, 0.9) !important;
@@ -97,7 +101,7 @@ export default function ARScene({ modelUrl, hotspotsCode }: { modelUrl: string; 
           border: 1px solid rgba(0,0,0,0.1);
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
           color: #18181b;
-          display: none; /* Disembunyikan secara default */
+          display: none;
           font-family: system-ui, -apple-system, sans-serif;
           font-size: 14px;
           font-weight: 700;
@@ -137,19 +141,8 @@ export default function ARScene({ modelUrl, hotspotsCode }: { modelUrl: string; 
         shadow-intensity="1.5"
         exposure="1"
         style={{ width: "100%", height: "100%", backgroundColor: "#18181b" }}
-      >
-        {/* Tombol khusus untuk masuk ke mode AR */}
-        <button 
-          slot="ar-button" 
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 bg-white text-black font-extrabold px-8 py-4 rounded-full shadow-[0_10px_40px_rgba(255,255,255,0.3)] hover:scale-105 active:scale-95 transition-all flex items-center gap-3 z-50"
-        >
-          <span className="text-2xl">📷</span> 
-          VIEW IN REAL WORLD
-        </button>
-
-        {/* Kode HTML Hotspot akan disuntikkan secara dinamis di sini oleh React useEffect */}
-
-      </ModelViewer>
+        dangerouslySetInnerHTML={{ __html: innerHtmlContent }}
+      />
     </div>
   );
 }

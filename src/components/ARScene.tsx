@@ -2,14 +2,10 @@
 
 import { useEffect, useState } from "react";
 
-// Mendeklarasikan tag custom Google model-viewer agar dikenali oleh TypeScript
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      "model-viewer": any;
-    }
-  }
-}
+// Trik agar TypeScript tidak protes tentang custom element
+const ModelViewer = "model-viewer" as any;
+
+
 
 export default function ARScene({ modelUrl }: { modelUrl: string }) {
   const [mounted, setMounted] = useState(false);
@@ -32,7 +28,7 @@ export default function ARScene({ modelUrl }: { modelUrl: string }) {
 
   return (
     <div className="w-full h-full bg-zinc-900">
-      <model-viewer
+      <ModelViewer
         src={modelUrl}
         alt="3D Sparepart Motor"
         ar
@@ -82,7 +78,7 @@ export default function ARScene({ modelUrl }: { modelUrl: string }) {
             </button>
           </div>
         )}
-      </model-viewer>
+      </ModelViewer>
     </div>
   );
 }

@@ -37,16 +37,17 @@ export default function ARScene({ modelUrl, hotspotsCode }: { modelUrl: string; 
                   const container = document.createElement('a-entity');
                   container.setAttribute('position', cleanPos);
 
-                  // 1. BOLA VISUAL (Kecil, elegan, dan berdenyut)
+                  // 1. BOLA VISUAL (Sangat kecil, elegan, dan berdenyut)
                   const visual = document.createElement('a-sphere');
-                  visual.setAttribute('radius', '0.04'); 
+                  visual.setAttribute('radius', '0.005'); // SUPER KECIL (sekitar 5 milimeter)
                   visual.setAttribute('color', '#4f46e5'); 
                   visual.setAttribute('opacity', '0.9');
-                  visual.setAttribute('animation__pulse', 'property: scale; from: 1 1 1; to: 1.5 1.5 1.5; dir: alternate; loop: true; dur: 800');
+                  // Animasi disesuaikan dengan skala kecil
+                  visual.setAttribute('animation__pulse', 'property: scale; from: 1 1 1; to: 1.6 1.6 1.6; dir: alternate; loop: true; dur: 800');
 
-                  // 2. BOLA HITBOX (Besar, transparan, sebagai sensor sentuhan jari)
+                  // 2. BOLA HITBOX (Transparan, sebagai sensor sentuhan jari)
                   const hitbox = document.createElement('a-sphere');
-                  hitbox.setAttribute('radius', '0.25'); // Ukuran super besar untuk jari
+                  hitbox.setAttribute('radius', '0.04'); // Hitbox moderat untuk jari (4 sentimeter)
                   hitbox.setAttribute('opacity', '0'); // Dibuat 100% transparan
                   hitbox.setAttribute('material', 'transparent: true');
                   hitbox.setAttribute('class', 'clickable'); // Sensor klik hanya pada hitbox

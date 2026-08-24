@@ -37,6 +37,7 @@ export default function AdminDashboard() {
     const formData = new FormData(e.currentTarget);
     const name = formData.get("name") as string;
     const file = formData.get("file") as File;
+    const hotspotsCode = formData.get("hotspots_code") as string;
 
     if (!name || !file) {
       setUploadStatus("Name and file are required.");
@@ -69,7 +70,7 @@ export default function AdminDashboard() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id, name, filename }),
+        body: JSON.stringify({ id, name, filename, hotspots_code: hotspotsCode }),
       });
       
       if (res.ok) {
@@ -177,6 +178,18 @@ export default function AdminDashboard() {
                   required 
                   className="w-full bg-black border border-zinc-700 rounded-xl px-4 py-3 text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer focus:outline-none transition-all"
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-zinc-300 mb-2">
+                  Hotspots HTML Code <span className="text-zinc-500 font-normal">(Opsional)</span>
+                </label>
+                <textarea 
+                  name="hotspots_code" 
+                  rows={4}
+                  className="w-full bg-black border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-mono text-xs"
+                  placeholder='<button class="Hotspot" slot="hotspot-1" ...> ... </button>'
+                ></textarea>
+                <p className="text-xs text-zinc-500 mt-1">Paste kode dari model-viewer.dev/editor ke sini.</p>
               </div>
               <button 
                 type="submit" 

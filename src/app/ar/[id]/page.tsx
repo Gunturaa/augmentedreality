@@ -31,7 +31,7 @@ export default async function DynamicARPage({ params }: { params: Promise<{ id: 
   return (
     <div className="relative w-full h-[100dvh] overflow-hidden bg-zinc-950">
       {/* Load Google Model-Viewer */}
-      <Script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js" strategy="lazyOnload" />
+      <Script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js" strategy="afterInteractive" />
       
       {/* Navigation Layer */}
       <div className="absolute top-6 left-6 z-50">
@@ -51,7 +51,7 @@ export default async function DynamicARPage({ params }: { params: Promise<{ id: 
       </div>
 
       {/* Model Viewer Scene */}
-      <ARScene modelUrl={model.url} />
+      <ARScene modelUrl={model.url} hotspotsCode={model.hotspots_code} />
     </div>
   );
 }

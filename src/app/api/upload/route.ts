@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { id, name, filename } = body;
+    const { id, name, filename, hotspots_code } = body;
 
     if (!id || !name || !filename) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -42,7 +42,8 @@ export async function POST(req: NextRequest) {
           filename,
           url: fileUrl,
           qrCode: qrCodeDataUrl,
-          arUrl: arUrl
+          arUrl: arUrl,
+          hotspots_code: hotspots_code || null
         }
       ])
       .select()

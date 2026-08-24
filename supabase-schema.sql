@@ -39,3 +39,10 @@ CREATE POLICY "Allow public deletes for ar-models"
 ON storage.objects FOR DELETE
 TO public
 USING ( bucket_id = 'ar-models' );
+
+-- ==========================================
+-- MIGRATION: ADD HOTSPOTS CODE COLUMN
+-- ==========================================
+-- Jalankan perintah di bawah ini di SQL Editor Supabase Anda
+-- untuk menambahkan kolom baru penyimpan kode hotspot.
+ALTER TABLE public.models ADD COLUMN IF NOT EXISTS hotspots_code TEXT;

@@ -36,11 +36,12 @@ export default function ARScene({ modelUrl, hotspotsCode }: { modelUrl: string; 
                   // Menciptakan "Bola Bercahaya" 3D di koordinat tersebut
                   const sphere = document.createElement('a-sphere');
                   sphere.setAttribute('position', cleanPos);
-                  sphere.setAttribute('radius', '0.08'); // Ukuran bola
+                  // MEMPERBESAR HITBOX: Ukuran bola dibesarkan (dari 0.08 ke 0.15) agar sangat mudah dipencet dengan jari
+                  sphere.setAttribute('radius', '0.15'); 
                   sphere.setAttribute('color', '#4f46e5'); // Warna ungu indigo
                   sphere.setAttribute('opacity', '0.9');
                   sphere.setAttribute('class', 'clickable'); // Agar bisa di-klik oleh raycaster
-                  sphere.setAttribute('animation__pulse', 'property: scale; from: 1 1 1; to: 1.4 1.4 1.4; dir: alternate; loop: true; dur: 800');
+                  sphere.setAttribute('animation__pulse', 'property: scale; from: 1 1 1; to: 1.5 1.5 1.5; dir: alternate; loop: true; dur: 800');
                   
                   // Logika saat bola disentuh/diklik
                   const triggerInfo = () => {

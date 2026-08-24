@@ -128,8 +128,6 @@ export default function ARScene({ modelUrl, hotspotsCode }: { modelUrl: string; 
               embedded 
               arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;"
               renderer="antialias: true; alpha: true"
-              cursor="rayOrigin: mouse; fuse: false"
-              raycaster="objects: .clickable"
               gesture-detector
             >
               <a-assets>
@@ -160,8 +158,15 @@ export default function ARScene({ modelUrl, hotspotsCode }: { modelUrl: string; 
                 ></a-entity>
               </a-marker>
               
-              <!-- Kamera Utama -->
-              <a-entity camera></a-entity>
+              <!-- Kamera Utama dengan Kursor Pembidik -->
+              <a-entity camera>
+                <a-cursor 
+                  color="#ffffff"
+                  fuse="false"
+                  raycaster="objects: .clickable"
+                  animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
+                ></a-cursor>
+              </a-entity>
             </a-scene>
           `,
         }}

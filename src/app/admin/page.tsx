@@ -189,7 +189,9 @@ export default function AdminDashboard() {
                   className="w-full bg-black border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-mono text-xs"
                   placeholder='<button class="Hotspot" slot="hotspot-1" ...> ... </button>'
                 ></textarea>
-                <p className="text-xs text-zinc-500 mt-1">Paste kode dari model-viewer.dev/editor ke sini.</p>
+                <p className="text-xs text-zinc-500 mt-2 font-medium">
+                  💡 <span className="text-zinc-400">Tips:</span> Anda tidak perlu repot memilah kode! Cukup <strong className="text-indigo-400">Copy semua kode (Copy HTML Snippet)</strong> dari modelviewer.dev/editor lalu Paste ke kotak ini. Sistem pintar kami akan otomatis menyaring dan mengambil kode hotspot-nya saja!
+                </p>
               </div>
               <button 
                 type="submit" 

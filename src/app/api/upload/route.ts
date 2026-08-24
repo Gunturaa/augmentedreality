@@ -11,6 +11,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
+    // Auto-extract only the hotspot buttons if user pasted the entire HTML block
+    let finalHotspotsCode = hotspots_code;
+    if (hotspots_code) {
+      const matches = hotspots_code.match(/<button class="Hotspot"[\s\S]*?<\/button>/g);
+      if (matches) {
+        finalHotspotsCode = matches.join('\n');
+      } else {
+        // If no hotspots found, leave it empty
+        finalHotspotsCode = null;
+      }
+    }
+
     // Get public URL from Supabase
     const { data: publicUrlData } = supabase.storage
       .from('ar-models')
@@ -43,7 +55,7 @@ export async function POST(req: NextRequest) {
           url: fileUrl,
           qrCode: qrCodeDataUrl,
           arUrl: arUrl,
-          hotspots_code: hotspots_code || null
+          hotspots_code: finalHotspotsCode || null
         }
       ])
       .select()

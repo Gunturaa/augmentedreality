@@ -42,15 +42,16 @@ export default function ARScene({ modelUrl, hotspotsCode }: { modelUrl: string; 
                   sphere.setAttribute('class', 'clickable'); // Agar bisa di-klik oleh raycaster
                   sphere.setAttribute('animation__pulse', 'property: scale; from: 1 1 1; to: 1.4 1.4 1.4; dir: alternate; loop: true; dur: 800');
                   
-                  // Menambahkan logika saat bola disentuh/diklik
-                  sphere.addEventListener('click', () => {
-                    // Mengirim sinyal ke antarmuka React dengan membawa teks keterangan
+                  // Logika saat bola disentuh/diklik
+                  const triggerInfo = () => {
                     window.dispatchEvent(new CustomEvent('show-ar-info', { detail: text }));
-                    
-                    // Animasi kedip kuning saat diklik
                     sphere.setAttribute('color', '#fbbf24');
                     setTimeout(() => sphere.setAttribute('color', '#4f46e5'), 500);
-                  });
+                  };
+                  
+                  // Gunakan click dan mousedown untuk kompatibilitas layar sentuh HP
+                  sphere.addEventListener('click', triggerInfo);
+                  sphere.addEventListener('mousedown', triggerInfo);
                   
                   // Tempelkan bola ke dalam objek 3D utama
                   this.el.appendChild(sphere);
@@ -142,7 +143,6 @@ export default function ARScene({ modelUrl, hotspotsCode }: { modelUrl: string; 
                   rotation="-90 0 0"
                   data-hotspots="${encodedHotspots}"
                   hotspots-parser
-                  animation="property: rotation; to: -90 360 0; loop: true; dur: 15000; easing: linear"
                 ></a-entity>
               </a-marker>
               

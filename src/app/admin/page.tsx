@@ -9,6 +9,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
+  const [processingId, setProcessingId] = useState<string | null>(null);
 
   const fetchModels = async () => {
     try {
@@ -53,6 +54,58 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleDelete = async (id: string, name: string) => {
+    if (!confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    setProcessingId(id);
+    try {
+      const res = await fetch(`/api/models/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (res.ok) {
+        fetchModels();
+      } else {
+        alert("Failed to delete model.");
+      }
+    } catch (error) {
+      alert("An error occurred while deleting.");
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleEdit = async (id: string, currentName: string) => {
+    const newName = prompt("Enter new model name:", currentName);
+    
+    if (newName === null || newName.trim() === "" || newName === currentName) {
+      return;
+    }
+
+    setProcessingId(id);
+    try {
+      const res = await fetch(`/api/models/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: newName.trim() }),
+      });
+      
+      if (res.ok) {
+        fetchModels();
+      } else {
+        alert("Failed to update model name.");
+      }
+    } catch (error) {
+      alert("An error occurred while updating.");
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-zinc-950 text-white p-8 font-sans">
       <div className="max-w-6xl mx-auto space-y-12">
@@ -68,7 +121,7 @@ export default function AdminDashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Upload Form */}
-          <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl h-fit shadow-2xl">
+          <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl h-fit shadow-2xl sticky top-8">
             <h2 className="text-xl font-bold mb-6">Upload New Model</h2>
             <form onSubmit={handleUpload} className="space-y-5">
               <div>
@@ -124,9 +177,28 @@ export default function AdminDashboard() {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {models.map((model) => (
-                  <div key={model.id} className="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden flex flex-col shadow-xl hover:border-zinc-700 transition-colors">
-                    <div className="p-6 flex-1 flex flex-col">
-                      <h3 className="font-bold text-xl mb-1 truncate">{model.name}</h3>
+                  <div key={model.id} className={`bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden flex flex-col shadow-xl transition-all relative ${processingId === model.id ? 'opacity-50 pointer-events-none' : 'hover:border-zinc-700'}`}>
+                    
+                    {/* Actions Menu */}
+                    <div className="absolute top-4 right-4 flex gap-2 z-10">
+                      <button 
+                        onClick={() => handleEdit(model.id, model.name)}
+                        className="w-8 h-8 flex items-center justify-center bg-zinc-800 hover:bg-indigo-600 text-sm rounded-full transition-colors shadow"
+                        title="Edit Name"
+                      >
+                        ✏️
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(model.id, model.name)}
+                        className="w-8 h-8 flex items-center justify-center bg-zinc-800 hover:bg-red-600 text-sm rounded-full transition-colors shadow"
+                        title="Delete Model"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+
+                    <div className="p-6 flex-1 flex flex-col pt-10">
+                      <h3 className="font-bold text-xl mb-1 truncate pr-8" title={model.name}>{model.name}</h3>
                       <p className="text-xs text-zinc-500 font-mono mb-6 truncate" title={model.id}>{model.id.split('-')[0]}...glb</p>
                       
                       <div className="flex-1 flex justify-center items-center bg-white p-6 rounded-2xl">

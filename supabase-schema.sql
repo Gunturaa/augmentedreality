@@ -22,3 +22,20 @@ USING ( true );
 CREATE POLICY "Anyone can insert models"
 ON public.models FOR INSERT
 WITH CHECK ( true );
+
+-- Mengizinkan update nama model
+CREATE POLICY "Anyone can update models"
+ON public.models FOR UPDATE
+USING ( true )
+WITH CHECK ( true );
+
+-- Mengizinkan hapus data model
+CREATE POLICY "Anyone can delete models"
+ON public.models FOR DELETE
+USING ( true );
+
+-- Mengizinkan siapa saja (publik) menghapus file dari bucket 'ar-models'
+CREATE POLICY "Allow public deletes for ar-models"
+ON storage.objects FOR DELETE
+TO public
+USING ( bucket_id = 'ar-models' );

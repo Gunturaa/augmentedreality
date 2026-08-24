@@ -30,6 +30,7 @@ export default function AdminDashboard() {
 
   const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = e.currentTarget;
     setUploading(true);
     setUploadStatus("Starting upload...");
     
@@ -73,7 +74,7 @@ export default function AdminDashboard() {
       
       if (res.ok) {
         setUploadStatus("Upload successful!");
-        e.currentTarget.reset();
+        form.reset();
         fetchModels(); // Refresh the list
       } else {
         const errorData = await res.json();

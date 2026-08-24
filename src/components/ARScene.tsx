@@ -30,6 +30,9 @@ export default function ARScene({ modelUrl, hotspotsCode }: { modelUrl: string; 
                 const text = annotationDiv ? annotationDiv.textContent : 'Info Part';
                 
                 if (pos) {
+                  // Membersihkan huruf 'm' (meter) dari koordinat Google
+                  const cleanPos = pos.replace(/m/g, '').trim();
+
                   // Membuat wadah untuk Visual dan Hitbox
                   const container = document.createElement('a-entity');
                   container.setAttribute('position', cleanPos);

@@ -33,6 +33,8 @@ export default async function DynamicARPage({ params }: { params: Promise<{ id: 
       {/* Load A-Frame and AR.js */}
       <Script src="https://aframe.io/releases/1.3.0/aframe.min.js" strategy="beforeInteractive" />
       <Script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js" strategy="beforeInteractive" />
+      {/* Load AR.js Gesture Controls (Zoom & Rotate) */}
+      <Script src="https://raw.githack.com/fcor/arjs-gestures/master/dist/gestures.js" strategy="beforeInteractive" />
       
       {/* Navigation Layer */}
       <div className="absolute top-6 left-6 z-50">

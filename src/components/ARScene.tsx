@@ -119,6 +119,7 @@ export default function ARScene({ modelUrl, hotspotsCode }: { modelUrl: string; 
               renderer="antialias: true; alpha: true"
               cursor="rayOrigin: mouse; fuse: false"
               raycaster="objects: .clickable"
+              gesture-detector
             >
               <a-assets>
                 <a-asset-item id="dynamic-model" src="${modelUrl}"></a-asset-item>
@@ -144,6 +145,7 @@ export default function ARScene({ modelUrl, hotspotsCode }: { modelUrl: string; 
                   rotation="-90 0 0"
                   data-hotspots="${encodedHotspots}"
                   hotspots-parser
+                  gesture-handler="minScale: 0.1; maxScale: 10"
                 ></a-entity>
               </a-marker>
               
